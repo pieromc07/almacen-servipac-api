@@ -176,7 +176,7 @@ export const deleteRole = async (id) => {
                 message: 'Role is not allowed to delete'
             }
         }
-        await Role.destroy();
+        await role.destroy();
         return {
             status: 200,
             message: 'Role deleted',
