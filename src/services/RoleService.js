@@ -185,7 +185,8 @@ export const deleteRole = async (id) => {
         console.log(error);
         return {
             status: 500,
-            message: 'Internal Server Error in delete'
+            message: 'Internal Server Error in delete',
+            moreinfo: error
         }
     }
 }
