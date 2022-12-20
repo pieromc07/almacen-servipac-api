@@ -1,0 +1,177 @@
+import { Rack } from "../models/Rack.js";
+
+export const createRack = async (name, levels, warehouse_id) => {
+    try {
+        const racks = await Rack.findAll({
+            where: {
+                warehouse_id: warehouse_id
+            }
+        });
+  
+        
+        const rack = racks.find(rack => rack.name === name);
+        if (rack) {
+            return {
+                status: 400,
+                message: "Rack name already exists in this warehouse"
+            }
+        }
+
+        const newRack = await Rack.create(
+            {
+                name: name,
+                levels: levels,
+                warehouse_id: warehouse_id
+            }
+        );
+        return {
+            status: 201,
+            message: 'Rack created',
+            data: newRack
+        }
+    } catch (error) {
+        return {
+            status: 500,
+            message: 'Internal server error while creating rack',
+            moreInfo: error
+        }
+    }
+}
+
+export const updateRack = async (id, name, levels, warehouse_id) => {
+    try {
+
+        const rack = await Rack.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if (!rack) {
+            return {
+                status: 404,
+                message: 'Rack not found'
+            }
+        }
+
+        if (rack.name !== name) {
+            const racks = await Rack.findAll({
+                where: {
+                    warehouse_id: warehouse_id
+                }
+            });
+
+            const rack = racks.find(rack => rack.name === name);
+            if (rack) {
+                return {
+                    status: 400,
+                    message: "Rack name already exists in this warehouse"
+                }
+            }
+        }
+
+        rack.name = name;
+        rack.levels = levels;
+        rack.warehouse_id = warehouse_id;
+
+        await rack.save();
+
+        return {
+            status: 200,
+            message: 'Rack updated',
+            data: rack
+        }
+
+    } catch (error) {
+        return {
+            status: 500,
+            message: 'Internal server error while updating rack',
+            moreInfo: error
+        }
+    }
+}
+
+export const deleteRack = async (id) => {
+    try {
+        const rack = await Rack.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if (!rack) {
+            return {
+                status: 404,
+                message: 'Rack not found'
+            }
+        }
+
+        await rack.destroy();
+
+        return {
+            status: 200,
+            message: 'Rack deleted'
+        }
+    } catch (error) {
+        return {
+            status: 500,
+            message: 'Internal server error while deleting rack',
+            moreInfo: error
+        }
+    }
+}
+
+export const findRackById = async (id) => {
+    try {
+        const rack = await Rack.findOne({
+            where: {
+                id: id
+            }
+        });
+
+        if (!rack) {
+            return {
+                status: 404,
+                message: 'Rack not found'
+            }
+        }
+
+        return {
+            status: 200,
+            message: 'Rack found',
+            data: rack
+        }
+    } catch (error) {
+        return {
+            status: 500,
+            message: 'Internal server error while finding rack',
+            moreInfo: error
+        }
+    }
+}
+
+export const findRackAll = async () => {
+    try {
+        const racks = await Rack.findAll();
+
+        if (!racks) {
+            return {
+                status: 404,
+                message: 'Racks not found'
+            }
+        }
+
+        return {
+            status: 200,
+            message: 'Racks found',
+            data: racks
+        }
+       
+    } catch (error) {
+        return {
+            status: 500,
+            message: 'Internal server error while finding racks',
+            moreInfo: error
+        }
+    }
+}
