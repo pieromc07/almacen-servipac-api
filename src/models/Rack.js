@@ -10,7 +10,6 @@ export const Rack = connection.define('racks', {
     name: {
         type: DataType.STRING,
         allowNull: false,
-        unique: true
     },
     levels: {
         type: DataType.INTEGER,
