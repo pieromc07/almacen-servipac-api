@@ -11,7 +11,7 @@ export const findUserAll = async () => {
             include: [
                 {
                     model: Role,
-                    attributes: ['description'],
+                    attributes: ['id', 'description'],
                     as: 'role'
                 }
             ]
