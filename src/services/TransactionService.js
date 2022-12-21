@@ -1,8 +1,9 @@
-import {Transaction} from '../models/transaction.js';
-import {TransactionDetail} from '../models/TransactionDetail.js';
+import { Transaction } from '../models/transaction.js';
+import { TransactionDetail } from '../models/TransactionDetail.js';
+import {Product} from '../models/Product.js';
 
 export const createTransaction = async (type_transaction_id, destination, client, user_id, details) => {
-    try{
+    try {
         const transaction = await Transaction.create({
             date: new Date(),
             type_transaction_id,
@@ -25,7 +26,7 @@ export const createTransaction = async (type_transaction_id, destination, client
             data: transaction
         }
     }
-    catch(error){
+    catch (error) {
         return {
             status: 500,
             message: 'Error creating transaction',
@@ -35,9 +36,9 @@ export const createTransaction = async (type_transaction_id, destination, client
 }
 
 export const findTransactionAll = async () => {
-    try{
+    try {
         const transactions = await Transaction.findAll();
-        if(!transactions){
+        if (!transactions) {
             return {
                 status: 404,
                 message: 'Transactions not found',
@@ -50,7 +51,7 @@ export const findTransactionAll = async () => {
             data: transactions
         }
     }
-    catch(error){
+    catch (error) {
         return {
             status: 500,
             message: 'Error finding transactions',
@@ -60,33 +61,50 @@ export const findTransactionAll = async () => {
 }
 
 export const findTransactionById = async (id) => {
-    try{
+    try {
+
         const transaction = await Transaction.findOne({
-            include: [
-                {
-                    model: TransactionDetail,
-                    as: 'details',
-                    include: ['product']
-                }
-            ],
             where: {
                 id
             }
         });
 
-        if(!transaction){
+        if (!transaction) {
             return {
                 status: 404,
                 message: 'Transaction not found',
             }
         }
+
+        const detail = await TransactionDetail.findAll({
+            include: [
+                {
+                    model: Product,
+                    attributes: [ 'id', 'name']
+                }
+            ],
+            where: {
+                transaction_id: id
+            }
+        });
+
+        const details = detail.map( (item) => {
+            return {
+                quantity: item.quantity,
+                product: item.product
+
+            }
+        });
         return {
             status: 200,
             message: 'Transaction found successfully',
-            data: transaction
+            data: {
+                ...transaction.dataValues,
+                details
+            }
         }
     }
-    catch(error){
+    catch (error) {
         return {
             status: 500,
             message: 'Error finding transaction',
