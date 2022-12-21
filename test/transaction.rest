@@ -1,0 +1,29 @@
+POST http://localhost:5000/api/v1/transaction HTTP/1.1
+Content-Type: application/json
+
+{
+    "type_transaction_id": 1,
+    "destination": "ALMACEN 1",
+    "client": null,
+    "user_id": 1,
+    "details": [
+        {
+            "product_id": 1,
+            "quantity": 2
+        },
+        {
+            "product_id": 2,
+            "quantity": 2
+        }
+    ]
+
+}
+
+### find all transactions
+GET http://localhost:5000/api/v1/transaction HTTP/1.1
+
+### find transaction by id
+GET http://localhost:5000/api/v1/transaction/2 HTTP/1.1
+
+### find all user
+GET http://localhost:5000/api/v1/user HTTP/1.1
