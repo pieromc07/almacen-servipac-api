@@ -47,6 +47,10 @@ ProductWarehouse.belongsTo(Product, {foreignKey: 'product_id'});
 Warehouse.hasMany(ProductWarehouse, {foreignKey: 'warehouse_id'});
 ProductWarehouse.belongsTo(Warehouse, {foreignKey: 'warehouse_id'});
 
+// Relacion de uno a muchos ( 1:N ) Rack:ProductWarehouse
+Rack.hasMany(ProductWarehouse, {foreignKey: 'rack_id'});
+ProductWarehouse.belongsTo(Rack, {foreignKey: 'rack_id'});
+
 // Relacion de uno a muchos ( 1:N ) User:Transaction
 User.hasMany(Transaction, {foreignKey: 'user_id'});
 Transaction.belongsTo(User, {foreignKey: 'user_id'});

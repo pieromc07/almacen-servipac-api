@@ -3,15 +3,17 @@ import { Product } from "../models/Product.js";
 import { ProductWarehouse } from "../models/ProductoWarehouse.js"
 import { Rack } from "../models/Rack.js";
 import { Warehouse } from "../models/Warehouse.js";
+import { Supplier } from "../models/Supplier.js";
+import { Sequelize } from "sequelize";
 
-export const createProduct = async (name, supplier_id, category_id, warehouse_id, stock, rack, level) => {
-    try{
+export const createProduct = async (name, supplier_id, category_id, warehouse_id, stock, rack_id, level) => {
+    try {
         const model = await Product.findOne({
-             where: {
-                 name: name
-             }
+            where: {
+                name: name
+            }
         });
-        if(model){
+        if (model) {
             return {
                 status: 400,
                 message: "Product already exists"
@@ -22,18 +24,18 @@ export const createProduct = async (name, supplier_id, category_id, warehouse_id
                 id: warehouse_id
             }
         });
-        if(!warehouse){
+        if (!warehouse) {
             return {
                 status: 400,
                 message: "Warehouse not found"
             }
         }
-        const rackm = await Rack.findOne({
+        const rack = await Rack.findOne({
             where: {
-                id: rack
+                id: rack_id
             }
         });
-        if(!rackm){
+        if (!rack) {
             return {
                 status: 400,
                 message: "Rack not found"
@@ -44,7 +46,7 @@ export const createProduct = async (name, supplier_id, category_id, warehouse_id
                 id: category_id
             }
         });
-        if(!category){
+        if (!category) {
             return {
                 status: 400,
                 message: "Category not found"
@@ -60,7 +62,7 @@ export const createProduct = async (name, supplier_id, category_id, warehouse_id
             product_id: product.id,
             warehouse_id,
             stock,
-            rack,
+            rack_id,
             level
         });
         return {
@@ -73,11 +75,11 @@ export const createProduct = async (name, supplier_id, category_id, warehouse_id
                 category_id: product.category_id,
                 warehouse_id: productWarehouse.warehouse_id,
                 stock: productWarehouse.stock,
-                rack: productWarehouse.rack,
+                rack_id: productWarehouse.rack_id,
                 level: productWarehouse.level
             }
         }
-    }catch(error){
+    } catch (error) {
         return {
             status: 500,
             message: "Internal server error sr",
@@ -86,14 +88,14 @@ export const createProduct = async (name, supplier_id, category_id, warehouse_id
     }
 }
 
-export const updateProduct = async (id, name, supplier_id, category_id, warehouse_id, stock, rack, level) => {
-    try{
+export const updateProduct = async (id, name, supplier_id, category_id, warehouse_id, stock, rack_id, level) => {
+    try {
         const product = await Product.findOne({
             where: {
                 id
             }
         });
-        if(!product){
+        if (!product) {
             return {
                 status: 400,
                 message: "Product not found"
@@ -104,19 +106,19 @@ export const updateProduct = async (id, name, supplier_id, category_id, warehous
                 product_id: id
             }
         });
-        if(!productWarehouse){
+        if (!productWarehouse) {
             return {
                 status: 400,
                 message: "Product not found"
             }
         }
-        if(product.name !== name){
+        if (product.name !== name) {
             const model = await Product.findOne({
                 where: {
                     name
                 }
             });
-            if(model){
+            if (model) {
                 return {
                     status: 400,
                     message: "Product already exists"
@@ -128,18 +130,18 @@ export const updateProduct = async (id, name, supplier_id, category_id, warehous
                 id: warehouse_id
             }
         });
-        if(!warehouse){
+        if (!warehouse) {
             return {
                 status: 400,
                 message: "Warehouse not found"
             }
         }
-        const rackm = await Rack.findOne({
+        const rack = await Rack.findOne({
             where: {
-                id: rack
+                id: rack_id
             }
         });
-        if(!rackm){
+        if (!rack) {
             return {
                 status: 400,
                 message: "Rack not found"
@@ -150,7 +152,7 @@ export const updateProduct = async (id, name, supplier_id, category_id, warehous
                 id: category_id
             }
         });
-        if(!category){
+        if (!category) {
             return {
                 status: 400,
                 message: "Category not found"
@@ -162,7 +164,7 @@ export const updateProduct = async (id, name, supplier_id, category_id, warehous
         product.category_id = category_id;
         productWarehouse.warehouse_id = warehouse_id;
         productWarehouse.stock = stock;
-        productWarehouse.rack = rack;
+        productWarehouse.rack_id = rack_id;
         productWarehouse.level = level;
         await product.save();
         await productWarehouse.save();
@@ -176,11 +178,11 @@ export const updateProduct = async (id, name, supplier_id, category_id, warehous
                 category_id: product.category_id,
                 warehouse_id: productWarehouse.warehouse_id,
                 stock: productWarehouse.stock,
-                rack: productWarehouse.rack,
+                rack_id: productWarehouse.rack_id,
                 level: productWarehouse.level
             }
         }
-    }catch(error){
+    } catch (error) {
         return {
             status: 500,
             message: "Internal server error",
@@ -190,14 +192,14 @@ export const updateProduct = async (id, name, supplier_id, category_id, warehous
 }
 
 export const deleteProduct = async (id) => {
-    try{
+    try {
         const product = await Product.findOne({
             where: {
                 id
             }
         });
 
-        if(!product){
+        if (!product) {
             return {
                 status: 400,
                 message: "Product not found"
@@ -208,7 +210,7 @@ export const deleteProduct = async (id) => {
             status: 200,
             message: "Product deleted"
         }
-    }catch(error){
+    } catch (error) {
         return {
             status: 500,
             message: "Internal server error",
@@ -218,37 +220,78 @@ export const deleteProduct = async (id) => {
 }
 
 export const findProductAll = async () => {
-    try{
-        const products = await Product.findAll();
-        if(products.length === 0){
+    try {
+        const products = await Product.findAll(
+            {
+                attributes: ['id', 'name'],
+                include: [
+                    {
+                        model: ProductWarehouse,
+                        attributes: ['stock', 'level', 'rack_id'],
+                        include: [
+                            {
+                                model: Warehouse,
+                                attributes: ['id', 'name']
+                            },
+                            {
+                                model: Rack,
+                                attributes: ['id', 'name']
+                            }
+                        ]
+                    },
+                    {
+                        model: Category,
+                        attributes: ['id', 'name']
+                    },
+                    {
+                        model: Supplier,
+                        attributes: ['id', 'company_name']
+                    },
+                ]
+            }
+        );
+        if (products.length === 0) {
             return {
                 status: 400,
                 message: "Products not found"
             }
         }
+        const data = products.map(product => {
+            const { id, name, category, supplier } = product;
+            return {
+                id,
+                name,
+                stock: product.product_warehouses[0].stock,
+                level: product.product_warehouses[0].level,
+                rack: product.product_warehouses[0].rack,
+                warehouse: product.product_warehouses[0].warehouse,
+                category,
+                supplier
+            }
+        });
         return {
             status: 200,
             message: "Products found",
-            data: products
+            data: data  
         }
-    }catch(error){
+    } catch (error) {
         return {
             status: 500,
-            message: "Internal server error",
+            message: "Internal server error service",
             error
         }
     }
 }
 
 export const findProductById = async (id) => {
-    try{
+    try {
         const product = await Product.findOne({
             where: {
                 id
             }
         });
 
-        if(!product){
+        if (!product) {
             return {
                 status: 400,
                 message: "Product not found"
@@ -260,7 +303,7 @@ export const findProductById = async (id) => {
             message: "Product found",
             data: product
         }
-    }catch(error){
+    } catch (error) {
         return {
             status: 500,
             message: "Internal server error",

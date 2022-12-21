@@ -19,7 +19,7 @@ export const ProductWarehouse = connection.define('product_warehouses', {
         type: DataType.INTEGER,
         allowNull: false
     },
-    rack: {
+    rack_id: {
         type: DataType.INTEGER,
         allowNull: false
     },
