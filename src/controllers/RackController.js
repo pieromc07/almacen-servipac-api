@@ -5,6 +5,7 @@ import {
   findRackAll,
   findRackById,
   updateRack,
+  findRackByWarehouse
 } from "../services/RackService.js";
 
 export const create = async (req = request, res = response) => {
@@ -67,6 +68,20 @@ export const findById = async (req = request, res = response) => {
     try {
         const { id } = req.params;
         const rack = await findRackById(id);
+        res.status(rack.status).json(rack);
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Internal server error while getting rack',
+            moreInfo: error
+        });
+    }
+}
+
+export const findByWarehouse = async (req = request, res = response) => {
+    try {
+        const { id } = req.params;
+        const rack = await findRackByWarehouse(id);
         res.status(rack.status).json(rack);
     } catch (error) {
         res.status(500).json({

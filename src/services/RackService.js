@@ -202,3 +202,31 @@ export const findRackAll = async () => {
         }
     }
 }
+
+export const findRackByWarehouse = async (warehouse_id) => {
+    try {
+        const racks = await Rack.findAll({
+            attributes: ['id', 'name', 'levels'],
+            where: {
+                warehouse_id: warehouse_id
+            },
+        });
+        if (!racks) {
+            return {
+                status: 404,
+                message: 'Racks not found'
+            }
+        }
+        return {
+            status: 200,
+            message: 'Racks found',
+            data: racks
+        }
+    } catch (error) {
+        return {
+            status: 500,
+            message: 'Internal server error while finding racks',
+            moreInfo: error
+        }
+    }
+}
