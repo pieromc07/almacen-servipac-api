@@ -224,7 +224,7 @@ export const create = async (username, email, password, status, role_id) => {
     }
 }
 
-export const update = async (id, username, email, password, status, role_id) => {
+export const update = async (id, username, email, status, role_id) => {
     try {
         const user = await User.findOne({
             where: {
@@ -249,8 +249,6 @@ export const update = async (id, username, email, password, status, role_id) => 
                 message: 'Role not found'
             }
         }
-        const salt = await bcrypt.genSalt(10);
-        password = await bcrypt.hash(password, salt);
         if(email !== user.email){
             const model = await findUserByEmail(email);
             if (model) {
@@ -271,7 +269,6 @@ export const update = async (id, username, email, password, status, role_id) => 
         }
         user.username = username.toUpperCase();
         user.email = email;
-        user.password = password;
         user.status = status;
         user.role_id = role_id;
         await user.save();

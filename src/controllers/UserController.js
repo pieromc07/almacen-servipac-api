@@ -30,9 +30,9 @@ export const findById = async (req = request, res = response) => {
 
 export const edit = async (req = request, res = response) => {
     const { id } = req.params;
-    const { username, email, password, status, role } = req.body;
+    const { username, email,  status, role } = req.body;
     try {
-        const response = await update(id, username, email, password, status, role);
+        const response = await update(id, username, email, status, role);
         if (response.status === 200) {
             return res.status(200).json(response);
         }
