@@ -272,7 +272,7 @@ export const findProductAll = async () => {
         return {
             status: 200,
             message: "Products found",
-            data: data  
+            data: data
         }
     } catch (error) {
         return {
@@ -288,9 +288,34 @@ export const findProductById = async (id) => {
         const product = await Product.findOne({
             where: {
                 id
-            }
-        });
+            },
+            attributes: ['id', 'name'],
+            include: [
+                {
+                    model: ProductWarehouse,
+                    attributes: ['stock', 'level'],
+                    include: [
+                        {
+                            model: Warehouse,
+                            attributes: ['id', 'name']
+                        },
+                        {
+                            model: Rack,
+                            attributes: ['id', 'name']
+                        }
+                    ]
+                },
+                {
 
+                    model: Category,
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: Supplier,
+                    attributes: ['id', 'company_name']
+                },
+            ]
+        });
         if (!product) {
             return {
                 status: 400,
@@ -298,10 +323,20 @@ export const findProductById = async (id) => {
             }
         }
 
+        
         return {
             status: 200,
             message: "Product found",
-            data: product
+            data: {
+                id: product.id,
+                name: product.name,
+                stock: product.product_warehouses[0].stock,
+                level: product.product_warehouses[0].level,
+                rack: product.product_warehouses[0].rack,
+                warehouse: product.product_warehouses[0].warehouse,
+                category: product.category,
+                supplier: product.supplier
+            }
         }
     } catch (error) {
         return {
