@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { create, findAll, findById, remove, update } from "../../controllers/RackController.js";
-
+import { verifyToken } from "../../middlewares/security.js";
 const router = Router();
 
-router.get('/', findAll);
-router.get('/:id', findById);
-router.post('/', create);
-router.put('/:id', update);
-router.delete('/:id', remove);
+router.post('/', [verifyToken], create);
+router.get('/', [verifyToken], findAll);
+router.get('/:id', [verifyToken], findById);
+router.put('/:id', [verifyToken], update);
+router.delete('/:id', [verifyToken], remove);
 
 export default router;

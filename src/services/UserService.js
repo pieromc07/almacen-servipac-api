@@ -22,10 +22,23 @@ export const findUserAll = async () => {
                 message: 'Users not found'
             }
         }
+        const data = users.map(user => {
+            let status = user.status ? 'Active' : 'Inactive';
+            return {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                status: {
+                    state: user.status,
+                    name: status
+                },
+                role: user.role
+            }
+        });
         return {
             status: 200,
             message: 'Users found',
-            data: users
+            data: data
         }
     } catch (error) {
         console.log(error);

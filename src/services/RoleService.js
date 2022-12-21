@@ -56,7 +56,7 @@ export const createRole = async (name, description) => {
     try {
         const model = await Role.findOne({
             where: {
-                name: 'ROLE_' + name.toUpperCase()
+                name: name.toUpperCase()
             }
         });
         if (model) {
@@ -67,7 +67,7 @@ export const createRole = async (name, description) => {
         }
 
         const role = await Role.create({
-            name: 'ROLE_' + name.toUpperCase(),
+            name: name.toUpperCase(),
             description: description.toUpperCase()
         });
         if (!role) {
@@ -104,16 +104,16 @@ export const updateRole = async (id, name, description) => {
                 message: 'Role not found'
             }
         }
-        if (role.name === 'ROLE_ADMIN') {
+        if (role.name === 'ADMIN') {
             return {
                 status: 403,
                 message: 'Role ADMIN cannot be modified'
             }
         }
-        if(role.name !== 'ROLE_' + name.toUpperCase()){
+        if(role.name !== name.toUpperCase()){
             const model = await Role.findOne({
                 where: {
-                    name: 'ROLE_' + name
+                    name: name
                 }
             });
             if (model) {
@@ -123,7 +123,7 @@ export const updateRole = async (id, name, description) => {
                 }
             }
         }
-        role.name = 'ROLE_' + name.toUpperCase();
+        role.name = name.toUpperCase();
         role.description = description.toUpperCase();
         const update = await role.save();
         if (!update) {
@@ -170,7 +170,7 @@ export const deleteRole = async (id) => {
                 message: 'Role is assigned to a user'
             }
         }
-        if (role.name === 'ROLE_ADMIN') {
+        if (role.name === 'ADMIN') {
             return {
                 status: 409,
                 message: 'Role is not allowed to delete'
