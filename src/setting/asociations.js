@@ -5,7 +5,7 @@ import { Rack } from "../models/Rack.js";
 import { Product } from "../models/Product.js";
 import { Supplier } from "../models/Supplier.js";
 import { Category } from "../models/Category.js";
-import { Transaction } from "../models/Transaction.js";
+// import { Transaction } from "../models/Transaction.js";
 import { TransactionDetail } from "../models/TransactionDetail.js";
 import { TypeTransaction } from "../models/TypeTransaction.js";
 import { ProductWarehouse } from "../models/ProductoWarehouse.js";
@@ -28,16 +28,16 @@ Supplier.hasMany(Product, {foreignKey: 'supplier_id'});
 Product.belongsTo(Supplier, {foreignKey: 'supplier_id'});
 
 // Relacion de uno a muchos ( 1:N ) TypeTransaction:Transaction
-TypeTransaction.hasMany(Transaction, {foreignKey: 'type_transaction_id'});
-Transaction.belongsTo(TypeTransaction, {foreignKey: 'type_transaction_id'});
+// TypeTransaction.hasMany(Transaction, {foreignKey: 'type_transaction_id'});
+// Transaction.belongsTo(TypeTransaction, {foreignKey: 'type_transaction_id'});
 
 // Relacion de uno a muchos ( 1:N ) Transaction:TransactionDetail
-Transaction.hasMany(TransactionDetail, {foreignKey: 'transaction_id'});
-TransactionDetail.belongsTo(Transaction, {foreignKey: 'transaction_id'});
+// Transaction.hasMany(TransactionDetail, {foreignKey: 'transaction_id'});
+// TransactionDetail.belongsTo(Transaction, {foreignKey: 'transaction_id'});
 
 // Relacion de uno a muchos ( 1:N ) Product:TransactionDetail
-Product.hasMany(TransactionDetail, {foreignKey: 'product_id'});
-TransactionDetail.belongsTo(Product, {foreignKey: 'product_id'});
+// Product.hasMany(TransactionDetail, {foreignKey: 'product_id'});
+// TransactionDetail.belongsTo(Product, {foreignKey: 'product_id'});
 
 // Relacion de uno a muchos ( 1:N ) Product:ProductWarehouse
 Product.hasMany(ProductWarehouse, {foreignKey: 'product_id'});
@@ -52,8 +52,8 @@ Rack.hasMany(ProductWarehouse, {foreignKey: 'rack_id'});
 ProductWarehouse.belongsTo(Rack, {foreignKey: 'rack_id'});
 
 // Relacion de uno a muchos ( 1:N ) User:Transaction
-User.hasMany(Transaction, {foreignKey: 'user_id'});
-Transaction.belongsTo(User, {foreignKey: 'user_id'});
+// User.hasMany(Transaction, {foreignKey: 'user_id'});
+// Transaction.belongsTo(User, {foreignKey: 'user_id'});
 
 
 
