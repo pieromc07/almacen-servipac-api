@@ -7,7 +7,6 @@ import supplierRoutes from "./supplier/supplier.routes.js";
 import warehouseRoutes from "./warehouse/warehouse.routes.js";
 import rackRoutes from "./rack/rack.routes.js";
 import productRoutes from "./product/product.routes.js";
-import transactionRoutes from "./transaction/transaction.routes.js";
 
 const router = Router();
 
@@ -19,7 +18,7 @@ router.use('/supplier', supplierRoutes);
 router.use('/warehouse', warehouseRoutes);
 router.use('/rack', rackRoutes);
 router.use('/product', productRoutes);
-router.use('/transaction', transactionRoutes);
+
 
 router.get('/ping', (req, res) => {
     res.send('pong');
