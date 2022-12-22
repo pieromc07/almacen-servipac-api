@@ -21,4 +21,8 @@ router.use('/rack', rackRoutes);
 router.use('/product', productRoutes);
 router.use('/transaction', transactionRoutes);
 
+router.get('/ping', (req, res) => {
+    res.send('pong');
+});
+
 export default router;
